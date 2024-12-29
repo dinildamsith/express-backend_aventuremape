@@ -42,7 +42,7 @@ router.post('/api/v1/guide/signup', async (req, res) => {
 
 // ----------------------- Save Guide -----------------------
 router.post('/api/v1/guide/save', async (req, res) => {
-    const { accEmail, guideImage, guideName, guideAge, guidePrice, languages } = req.body;
+    const { accEmail, guideImage,guideAbout, guideName, guideAge, guidePrice, languages } = req.body;
 
     console.log(guideImage)
     try {
@@ -58,6 +58,7 @@ router.post('/api/v1/guide/save', async (req, res) => {
             guideEntity.guideCode = generateUUID(); // Generate unique guide code
             guideEntity.guideImage = guideImage;
             guideEntity.guideName = guideName;
+            guideEntity.guideAbout = guideAbout;
             guideEntity.guideAge = guideAge;
             guideEntity.guidePrice = guidePrice;
             guideEntity.languages = languages;
@@ -81,7 +82,7 @@ router.post('/api/v1/guide/save', async (req, res) => {
 
 // ----------------------- Update Guide -----------------------
 router.put('/api/v1/guide/update', async (req, res) => {
-    const { accEmail, guideImage, guideName, guideAge, guidePrice, languages } = req.body;
+    const { accEmail, image, name,about, age, price, languages } = req.body;
 
     try {
         const guideEntity = await GuideModel.findOne({ accEmail });
@@ -92,10 +93,11 @@ router.put('/api/v1/guide/update', async (req, res) => {
             return res.status(400).json(responseDto);
         }
 
-        guideEntity.guideImage = guideImage;
-        guideEntity.guideName = guideName;
-        guideEntity.guideAge = guideAge;
-        guideEntity.guidePrice = guidePrice;
+        guideEntity.guideImage = image;
+        guideEntity.guideName = name;
+        guideEntity.guideAge = age;
+        guideEntity.guidePrice = price;
+        guideEntity.guideAbout = about;
         guideEntity.languages = languages;
 
         await guideEntity.save();
@@ -128,7 +130,7 @@ router.delete('/api/v1/guide/delete/:accEmail', async (req, res) => {
         guideEntity.guideName = null;
         guideEntity.guideAge = null;
         guideEntity.guidePrice = null;
-        guideEntity.languages = null;
+        guideEntity.languages = [];
 
         await guideEntity.save();
         responseDto.setStatus('SUCCESS');
@@ -174,7 +176,7 @@ router.post('/api/v1/guide/sign-in', async (req, res) => {
 });
 
 // ----------------------- Selected Guide -----------------------
-router.get('/api/v1/guide/save/selected-guide/:guideEmail', async (req, res) => {
+router.get('/api/v1/guide/selected-guide/:guideEmail', async (req, res) => {
     const { guideEmail } = req.params;
 
     try {
