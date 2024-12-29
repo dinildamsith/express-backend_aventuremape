@@ -80,7 +80,7 @@ router.post('/api/v1/guide/save', async (req, res) => {
     }
 });
 
-// ----------------------- Update Guide -----------------------
+// ----------------------- Update Guide details -----------------------
 router.put('/api/v1/guide/update', async (req, res) => {
     const { accEmail, image, name,about, age, price, languages } = req.body;
 
@@ -103,6 +103,34 @@ router.put('/api/v1/guide/update', async (req, res) => {
         await guideEntity.save();
         responseDto.setStatus('SUCCESS');
         responseDto.setDescription('Guide Updated Successfully');
+        return res.status(200).json(responseDto);
+    } catch (error) {
+        console.error(error);
+        responseDto.setStatus('FAILED');
+        responseDto.setDescription('An error occurred while updating the guide');
+        return res.status(500).json(responseDto);
+    }
+});
+
+// ----------------------- Update Guide gallery -----------------------
+router.put('/api/v1/guide/update-gallery', async (req, res) => {
+    const { accEmail, images } = req.body;
+
+    try {
+        const guideEntity = await GuideModel.findOne({ accEmail });
+
+        if (!guideEntity) {
+            responseDto.setStatus('FAILED');
+            responseDto.setDescription('Guide not found');
+            return res.status(400).json(responseDto);
+        }
+
+        guideEntity.imageGallery = images;
+
+
+        await guideEntity.save();
+        responseDto.setStatus('SUCCESS');
+        responseDto.setDescription('Guide Gallery Updated Successfully');
         return res.status(200).json(responseDto);
     } catch (error) {
         console.error(error);

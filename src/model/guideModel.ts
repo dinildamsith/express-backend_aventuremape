@@ -26,12 +26,7 @@ const GuideSchema = new mongoose.Schema({
     ],
 
     // Image gallery array
-    imageGallery: [
-        {
-            imageUrl: { type: String, required: true }, // URL or path to the image
-            description: { type: String } // Optional: A description for each image
-        }
-    ],
+    imageGallery: [],
 
     // // Orders referencing the 'Order' model
     // orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
