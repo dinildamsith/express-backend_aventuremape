@@ -129,13 +129,34 @@ router.put('/api/v1/vehicle/update/:accEmail', async (req, res) => {
         }
 
         // Update vehicle details
-        vehicle.vehicleImage = vehicleImage;
-        vehicle.vehicleNumber = vehicleNumber;
-        vehicle.vehicleBrand = vehicleBrand;
-        vehicle.vehicleType = vehicleType;
-        vehicle.rentType = rentType;
-        vehicle.sheetCount = sheetCount;
-        vehicle.rentAmount = rentAmount;
+
+        if (rentType === 'WITH_DRIVER') {
+            vehicle.vehicleImage = vehicleImage;
+            vehicle.vehicleNumber = vehicleNumber;
+            vehicle.vehicleBrand = vehicleBrand;
+            vehicle.vehicleType = vehicleType;
+            vehicle.rentType = rentType;
+            vehicle.sheetCount = sheetCount;
+            vehicle.rentAmount = rentAmount;
+        }
+
+        if (rentType === 'WITHOUT_DRIVER') {
+            vehicle.vehicleImage = vehicleImage;
+            vehicle.vehicleNumber = vehicleNumber;
+            vehicle.vehicleBrand = vehicleBrand;
+            vehicle.vehicleType = vehicleType;
+            vehicle.rentType = rentType;
+            vehicle.sheetCount = sheetCount;
+            vehicle.rentAmount = rentAmount;
+            vehicle.driverCode = null;
+            vehicle.driverImage = null;
+            vehicle.driverName = null;
+            vehicle.driverAge = null;
+            vehicle.driverLicense = null;
+            vehicle.driverLanguages = null;
+            vehicle.driverExperience = null;
+        }
+
 
         await vehicle.save();
 
@@ -200,7 +221,7 @@ router.post('/api/v1/vehicle/add-driver/:accEmail', async (req, res) => {
 // 5. Update Driver Details
 router.put('/api/v1/vehicle/update-driver/:accEmail', async (req, res) => {
     const { accEmail } = req.params;
-    const { driverImage, driverName, driverAge, driverLicense, driverLanguages } = req.body;
+    const { driverImage, driverName, driverAge, driverLicense, driverLanguages, driverExperience } = req.body;
 
     try {
         const vehicle = await VehicleModel.findOne({ accEmail });
@@ -229,6 +250,7 @@ router.put('/api/v1/vehicle/update-driver/:accEmail', async (req, res) => {
         vehicle.driverAge = driverAge;
         vehicle.driverLicense = driverLicense;
         vehicle.driverLanguages = driverLanguages;
+        vehicle.driverExperience = driverExperience;
 
         await vehicle.save();
 
