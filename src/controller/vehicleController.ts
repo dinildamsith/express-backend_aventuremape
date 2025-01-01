@@ -1,6 +1,7 @@
 import express from 'express';
 import { VehicleModel } from '../model/vehicleModel';  // Assume you have a Mongoose model for Vehicle
 import crypto from 'crypto';
+import {GuideModel} from "../model/guideModel";
 
 
 
@@ -57,7 +58,7 @@ router.post('/api/v1/vehicle/signup', async (req, res) => {
 
 // 2. Save Vehicle Details
 router.post('/api/v1/vehicle/save', async (req, res) => {
-    const { accEmail, vehicleImage, vehicleNumber, vehicleBrand, vehicleType, rentType, sheetCount, rentAmount, driverDetails } = req.body;
+    const { accEmail, vehicleImage, vehicleNumber, vehicleBrand, vehicleType, rentType, sheetCount, rentAmount, driverImage, driverName, driverAge, driverLicense,driverLanguages,driverExperience } = req.body;
 
     try {
         const vehicle = await VehicleModel.findOne({ accEmail });
@@ -84,13 +85,14 @@ router.post('/api/v1/vehicle/save', async (req, res) => {
         vehicle.sheetCount = sheetCount;
         vehicle.rentAmount = rentAmount;
 
-        if (driverDetails && rentType === 'WITH_DRIVER') {
+        if (rentType === 'WITH_DRIVER') {
             vehicle.driverCode = crypto.randomUUID();
-            vehicle.driverImage = driverDetails.driverImage;
-            vehicle.driverName = driverDetails.driverName;
-            vehicle.driverAge = driverDetails.driverAge;
-            vehicle.driverLicense = driverDetails.driverLicense;
-            vehicle.driverLanguages = driverDetails.driverLanguages;
+            vehicle.driverImage = driverImage;
+            vehicle.driverName = driverName;
+            vehicle.driverAge = driverAge;
+            vehicle.driverLicense = driverLicense;
+            vehicle.driverLanguages = driverLanguages;
+            vehicle.driverExperience = driverExperience;
         }
 
         await vehicle.save();
@@ -268,6 +270,37 @@ router.post('/api/v1/vehicle/sign-in', async (req, res) => {
         console.error(error);
         responseDTO.status = 'FAILED';
         responseDTO.description = 'An error occurred while signing in';
+        return res.status(500).json(responseDTO);
+    }
+});
+
+
+router.get('/api/v1/guide/selected-vehicle/:vehicleEmail', async (req, res) => {
+    const { vehicleEmail } = req.params;
+
+    try {
+        const vehicleEntity = await VehicleModel.findOne({ accEmail: vehicleEmail});
+
+        if (!vehicleEntity) {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'Vehicle not found';
+            return res.status(400).json(responseDTO);
+        }
+
+        if (vehicleEntity.vehicleCode) {
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Selected Vehicle Retrieved Successfully';
+            responseDTO.data =vehicleEntity;
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'Vehicle Details not available';
+            return res.status(400).json(responseDTO);
+        }
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while retrieving the guide';
         return res.status(500).json(responseDTO);
     }
 });

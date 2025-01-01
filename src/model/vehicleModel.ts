@@ -7,10 +7,11 @@ const VehicleSchema = new mongoose.Schema({
     accPassword: { type: String, required: true },
     accType: { type: String, required: true },
     vehicleCode: { type: String, },
-    vehicleImage: { type: String },
+    vehicleImage: [{ type: String }],
     vehicleNumber: { type: String,},
     vehicleBrand: { type: String },
     vehicleType: { type: String },
+    vehicleReviews: [{ type: String }],
     rentType: { type: String },
     sheetCount: { type: String },
     rentAmount: { type: String },
@@ -20,6 +21,8 @@ const VehicleSchema = new mongoose.Schema({
     driverAge: { type: String },
     driverLicense: { type: String },
     driverLanguages: { type: String },
+    driverExperience: { type: String },
+    driverReviews: [{ type: String }],
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
 });
 
