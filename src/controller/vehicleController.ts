@@ -329,4 +329,46 @@ router.get('/api/v1/guide/selected-vehicle/:vehicleEmail', async (req, res) => {
     }
 });
 
+
+router.delete('/api/v1/driver/delete/:accEmail', async (req, res) => {
+
+    const { accEmail } = req.params;
+
+
+    try {
+        const vehicle = await VehicleModel.findOne({ accEmail });
+        if (!vehicle) {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'Vehicle Account not found';
+            return res.status(400).json(responseDTO);
+        } else {
+
+            if (vehicle.driverCode === null) {
+                responseDTO.status = 'FAILED';
+                responseDTO.description = 'Driver not found';
+                return res.status(400).json(responseDTO);
+            } else {
+                vehicle.driverCode = null;
+                vehicle.driverImage = null;
+                vehicle.driverName = null;
+                vehicle.driverAge = null;
+                vehicle.driverLicense = null;
+                vehicle.driverLanguages = null;
+                vehicle.driverExperience = null;
+                await vehicle.save();
+                responseDTO.status = 'SUCCESS';
+                responseDTO.description = 'Driver Deleted Successfully';
+                return res.status(200).json(responseDTO);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while deleting driver';
+        return res.status(500).json(responseDTO);
+
+    }
+
+});
+
 export default router;
