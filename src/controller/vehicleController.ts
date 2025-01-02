@@ -145,7 +145,7 @@ router.put('/api/v1/vehicle/update/:accEmail', async (req, res) => {
             vehicle.vehicleNumber = vehicleNumber;
             vehicle.vehicleBrand = vehicleBrand;
             vehicle.vehicleType = vehicleType;
-            vehicle.rentType = rentType;
+            vehicle.rentType = "WITHOUT_DRIVER";
             vehicle.sheetCount = sheetCount;
             vehicle.rentAmount = rentAmount;
             vehicle.driverCode = null;
@@ -174,7 +174,7 @@ router.put('/api/v1/vehicle/update/:accEmail', async (req, res) => {
 // 4. Add Driver Details
 router.post('/api/v1/vehicle/add-driver/:accEmail', async (req, res) => {
     const { accEmail } = req.params;
-    const { driverImage, driverName, driverAge, driverLicense, driverLanguages } = req.body;
+    const { driverImage, driverName, driverAge, driverLicense, driverLanguages, driverExperience } = req.body;
 
     try {
         const vehicle = await VehicleModel.findOne({ accEmail });
@@ -201,9 +201,11 @@ router.post('/api/v1/vehicle/add-driver/:accEmail', async (req, res) => {
         vehicle.driverCode = crypto.randomUUID();
         vehicle.driverImage = driverImage;
         vehicle.driverName = driverName;
+        vehicle.rentType = "WITH_DRIVER";
         vehicle.driverAge = driverAge;
         vehicle.driverLicense = driverLicense;
         vehicle.driverLanguages = driverLanguages;
+        vehicle.driverExperience = driverExperience;
 
         await vehicle.save();
 
