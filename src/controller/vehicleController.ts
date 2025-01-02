@@ -348,6 +348,7 @@ router.delete('/api/v1/driver/delete/:accEmail', async (req, res) => {
                 responseDTO.description = 'Driver not found';
                 return res.status(400).json(responseDTO);
             } else {
+                vehicle.rentType="WITHOUT_DRIVER";
                 vehicle.driverCode = null;
                 vehicle.driverImage = null;
                 vehicle.driverName = null;
