@@ -23,7 +23,7 @@ const VehicleSchema = new mongoose.Schema({
     driverLanguages: { type: String },
     driverExperience: { type: String },
     driverReviews: [{ type: String }],
-    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
+    // orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
 });
 
 // Create Vehicle Model

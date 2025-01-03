@@ -9,9 +9,15 @@ const OrderSchema = new mongoose.Schema({
     orderStatus: { type: String, required: true },
     orderStartDuration: { type: String },
     orderEndDuration: { type: String },
-    buyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Buyer' },
-    guide: { type: mongoose.Schema.Types.ObjectId, ref: 'Guide' },
-    vehicle: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' }
+    buyerEmail: { type: String, required: true },
+    guide : {type: String, required: true},
+    vehicle : {type: String, required: true},
+
+
+
+    // buyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Buyer' },
+    // guide: { type: mongoose.Schema.Types.ObjectId, ref: 'Guide' },
+    // vehicle: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' }
 });
 
 // Create Order Model

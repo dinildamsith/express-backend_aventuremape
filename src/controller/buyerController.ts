@@ -87,4 +87,32 @@ router.post('/api/v1/buyer/sign-in', async (req, res) => {
     }
 });
 
+// sign in buyer details get
+router.get('/api/v1/buyer/selected/:accEmail', async (req, res) => {
+    const { accEmail } = req.params;
+
+    try {
+        // Find the buyer by email
+        const buyerEntity = await BuyerModel.findOne({accEmail});
+
+        if (buyerEntity) {
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Buyer Get Success';
+            responseDTO.data = buyerEntity;
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'Buyer not found';
+            return res.status(400).json(responseDTO);
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while signing in the buyer';
+        return res.status(500).json(responseDTO);
+    }
+});
+
 export default router;
