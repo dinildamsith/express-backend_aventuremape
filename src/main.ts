@@ -5,6 +5,7 @@ import GuideController from "./controller/guideController";
 import vehicleController from "./controller/vehicleController";
 import cors from 'cors';
 import imageUploadController from "./controller/imageUploadController";
+import orderController from './controller/orderController'
 
 
 const app = express();
@@ -25,7 +26,7 @@ mongoose.connect('mongodb://localhost:27017/adventure-map')
     });
 
 // Use the routes for buyer-related actions
-app.use('/adventure-map', BuyerController,GuideController, vehicleController, imageUploadController);
+app.use('/adventure-map', BuyerController,GuideController, vehicleController, imageUploadController, orderController);
 
 // Start the server
 const PORT = 5000;
