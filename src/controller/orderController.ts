@@ -28,9 +28,12 @@ router.post('/api/v1/order/perches-vehicle', async (req, res) => {
 
     try {
 
-        const buyer = await BuyerModel.findOne({buyerEmail})
+        console.log(buyerEmail)
+        const existingBuyer = await BuyerModel.findOne({ accEmail : buyerEmail });
 
-        if (buyer) {
+
+
+        if (existingBuyer) {
             // Create a new order
             const orderEntity = new OrderModel({
                 orderType,
