@@ -108,8 +108,10 @@ router.put('/api/v1/order/accept-vehicle-order/:orderId/:vehicle_mail', async (r
     if (!onGoingOrAcceptOrder) {
 
         const order = await OrderModel.findOne({_id: orderId})
+
         if (order) {
             await OrderModel.updateOne({_id: orderId}, {$set: {orderStatus: "ACCEPT"}})
+            await VehicleModel.updateOne({accEmail: vehicle_mail}, {$set: {vehicleStatus: 'UNAVAILABLE'}})
             responseDTO.status = 'SUCCESS';
             responseDTO.description = 'Order Accept Success.';
             responseDTO.data = order;
