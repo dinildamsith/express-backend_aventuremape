@@ -373,4 +373,24 @@ router.delete('/api/v1/driver/delete/:accEmail', async (req, res) => {
 
 });
 
+
+//----------------------- Get All Available Vehicles
+router.get("/api/v1/get-all-vehicles", async (req,res) => {
+
+   const availableAllVehicles = await VehicleModel.find({vehicleStatus: 'AVAILABLE'})
+
+    if (availableAllVehicles) {
+        responseDTO.status = 'SUCCESS';
+        responseDTO.description = 'All Available Vehicle Get Success';
+        responseDTO.data =availableAllVehicles;
+        return res.status(200).json(responseDTO);
+    } else {
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'Available Vehicle Not Found...';
+        responseDTO.data =availableAllVehicles;
+        return res.status(400).json(responseDTO);
+    }
+
+})
+
 export default router;
