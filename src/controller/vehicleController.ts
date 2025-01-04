@@ -79,6 +79,7 @@ router.post('/api/v1/vehicle/save', async (req, res) => {
         vehicle.vehicleCode = crypto.randomUUID();
         vehicle.vehicleImage = vehicleImage;
         vehicle.vehicleNumber = vehicleNumber;
+        vehicle.vehicleStatus = "AVAILABLE"
         vehicle.vehicleBrand = vehicleBrand;
         vehicle.vehicleType = vehicleType;
         vehicle.rentType = rentType;

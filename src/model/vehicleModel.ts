@@ -12,6 +12,7 @@ const VehicleSchema = new mongoose.Schema({
     vehicleBrand: { type: String },
     vehicleType: { type: String },
     vehicleReviews: [{ type: String }],
+    vehicleStatus: {type :String},
     rentType: { type: String },
     sheetCount: { type: String },
     rentAmount: { type: String },
