@@ -93,4 +93,38 @@ router.get('/api/v1/order/pending-vehicle-orders/:email', async (req, res) => {
 });
 
 
+//-----------------------Pending vehicle order Accept
+router.put('/api/v1/order/accept-vehicle-order/:orderId/:vehicle_mail', async (req, res) => {
+
+    const {orderId} = req.params
+    const {vehicle_mail} = req.params
+
+
+    //----------check already accept or ongoing order have
+    const onGoingOrAcceptOrder =  await OrderModel.findOne({ vehicle: vehicle_mail, orderStatus: 'ACCEPT' || 'ON_GOING' })
+
+
+    //----------- accept or ongoing order not time accept order
+    if (!onGoingOrAcceptOrder) {
+
+        const order = await OrderModel.findOne({_id: orderId})
+        if (order) {
+            await OrderModel.updateOne({_id: orderId}, {$set: {orderStatus: "ACCEPT"}})
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Order Accept Success.';
+            responseDTO.data = order;
+            return res.status(200).json(responseDTO);
+        }
+
+    } else {
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'This Vehicle Already This Time Some Buyer Buy!!!.';
+        return res.status(404).json(responseDTO);
+    }
+
+
+
+})
+
+
 export default router
