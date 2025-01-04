@@ -1,5 +1,7 @@
 import express from 'express';
 import  OrderModel  from '../model/orderModel';
+import {VehicleModel} from "../model/vehicleModel";
+import {BuyerModel} from "../model/buyerModel";
 
 
 const router = express.Router();
@@ -26,23 +28,32 @@ router.post('/api/v1/order/perches-vehicle', async (req, res) => {
 
     try {
 
-        // Create a new order
-        const orderEntity = new OrderModel({
-            orderType,
-            orderDate : Date.now(),
-            orderPrice,
-            orderStatus : "PENDING",
-            orderStartDuration,
-            orderEndDuration,
-            buyerEmail,
-            vehicle: vehicle
-        });
+        const buyer = await BuyerModel.findOne({buyerEmail})
 
-        await orderEntity.save();
+        if (buyer) {
+            // Create a new order
+            const orderEntity = new OrderModel({
+                orderType,
+                orderDate : Date.now(),
+                orderPrice,
+                orderStatus : "PENDING",
+                orderStartDuration,
+                orderEndDuration,
+                buyerEmail,
+                vehicle: vehicle
+            });
 
-        responseDTO.status = 'SUCCESS';
-        responseDTO.description = 'Order Created Successfully';
-        return res.status(200).json(responseDTO);
+            await orderEntity.save();
+            // await VehicleModel.updateOne({accEmail: vehicle}, {$set: {vehicleStatus: 'UNAVAILABLE'}})
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Order Created Successfully';
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'This email have no buyer acc. first create buyer acc';
+            return res.status(400).json(responseDTO);
+        }
+
     } catch (error) {
         console.error(error);
         responseDTO.status = 'FAILED';
