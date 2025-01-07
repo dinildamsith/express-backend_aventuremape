@@ -188,6 +188,47 @@ router.put('/api/v1/order/accept-vehicle-order/:orderId/:vehicle_mail', async (r
 })
 
 
+
+//-----------------------Pending guide order Accept
+router.put('/api/v1/order/accept-guide-order/:orderId/:guide_mail', async (req, res) => {
+
+    const {orderId} = req.params
+    const {guide_mail} = req.params
+
+
+    //----------check already accept or ongoing order have
+    // @ts-ignore
+    const onGoingOrAcceptOrder =  await OrderModel.findOne({ guide: guide_mail, orderStatus: 'ACCEPT' || 'ON_GOING' })
+
+
+    //----------- accept or ongoing order not time accept order
+    if (!onGoingOrAcceptOrder) {
+
+        const order = await OrderModel.findOne({_id: orderId})
+
+        if (order) {
+            await OrderModel.updateOne({_id: orderId}, {$set: {orderStatus: "ACCEPT"}})
+            await GuideModel.updateOne({accEmail: guide_mail}, {$set: {guideStatus: 'UNAVAILABLE'}})
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Order Accept Success.';
+            responseDTO.data = order;
+            return res.status(200).json(responseDTO);
+        }
+
+    } else {
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'This Guide Already This Time Some Buyer Buy!!!.';
+        return res.status(404).json(responseDTO);
+    }
+
+
+
+})
+
+
+
+
+
 // Define the method to run daily  ( this method process is accept order get and order start date come date auto set order status ONGOING)
 async function dailyTask() {
     try {
