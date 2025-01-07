@@ -60,6 +60,7 @@ router.post('/api/v1/guide/save', async (req, res) => {
             guideEntity.guideName = guideName;
             guideEntity.guideAbout = guideAbout;
             guideEntity.guideAge = guideAge;
+            guideEntity.guideStatus = 'AVAILABLE'
             guideEntity.guidePrice = guidePrice;
             guideEntity.languages = languages;
 
@@ -97,6 +98,7 @@ router.put('/api/v1/guide/update', async (req, res) => {
         guideEntity.guideName = name;
         guideEntity.guideAge = age;
         guideEntity.guidePrice = price;
+        guideEntity.guideStatus = 'AVAILABLE'
         guideEntity.guideAbout = about;
         guideEntity.languages = languages;
 
@@ -157,6 +159,7 @@ router.delete('/api/v1/guide/delete/:accEmail', async (req, res) => {
         guideEntity.guideImage = null;
         guideEntity.guideName = null;
         guideEntity.guideAge = null;
+        guideEntity.guideStatus = null
         guideEntity.guidePrice = null;
         guideEntity.languages = [];
 
@@ -225,6 +228,31 @@ router.get('/api/v1/guide/selected-guide/:guideEmail', async (req, res) => {
             responseDto.setStatus('FAILED');
             responseDto.setDescription('Guide Details not available');
             return res.status(400).json(responseDto);
+        }
+    } catch (error) {
+        console.error(error);
+        responseDto.setStatus('FAILED');
+        responseDto.setDescription('An error occurred while retrieving the guide');
+        return res.status(500).json(responseDto);
+    }
+});
+
+//---------- Get available all guides
+router.get('/api/v1/guides', async (req, res) => {
+
+    try {
+        const guideEntity = await GuideModel.find({guideStatus: "AVAILABLE"})
+
+        if (!guideEntity) {
+            responseDto.setStatus('FAILED');
+            responseDto.setDescription('Guides not found');
+            return res.status(400).json(responseDto);
+        }else
+        {
+            responseDto.setStatus('SUCCESS');
+            responseDto.setDescription('Guide Retrieved Successfully');
+            responseDto.setData(guideEntity);
+            return res.status(200).json(responseDto);
         }
     } catch (error) {
         console.error(error);
