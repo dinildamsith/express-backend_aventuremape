@@ -4,6 +4,7 @@ import schedule from "node-schedule";
 import  OrderModel  from '../model/orderModel';
 import {VehicleModel} from "../model/vehicleModel";
 import {BuyerModel} from "../model/buyerModel";
+import {GuideModel} from "../model/guideModel";
 
 
 const router = express.Router();
@@ -24,9 +25,9 @@ class ResponseDto {
 
 const responseDTO = new ResponseDto();
 
-//--------------------------------- Create Order Buy Vehicle Rent ---------------------------------
-router.post('/api/v1/order/perches-vehicle', async (req, res) => {
-    const { orderType,  orderPrice, orderStartDuration, orderEndDuration, buyerEmail, vehicle } = req.body;
+//--------------------------------- Create Order Buy Vehicle/guide  Rent ---------------------------------
+router.post('/api/v1/order/perches', async (req, res) => {
+    const { orderType,  orderPrice, orderStartDuration, orderEndDuration, buyerEmail, vehicle, guide } = req.body;
 
     try {
 
@@ -45,7 +46,8 @@ router.post('/api/v1/order/perches-vehicle', async (req, res) => {
                 orderStartDuration,
                 orderEndDuration,
                 buyerEmail,
-                vehicle: vehicle
+                vehicle: vehicle,
+                guide: guide
             });
 
             await orderEntity.save();
@@ -94,6 +96,60 @@ router.get('/api/v1/order/pending-vehicle-orders/:email', async (req, res) => {
     }
 });
 
+
+//-------------------- Pending Vehicle Orders Get ---------------------------------
+router.get('/api/v1/order/pending-vehicle-orders/:email', async (req, res) => {
+
+    const { email } = req.params;
+
+    try {
+        const orders = await OrderModel.find({ vehicle: email,orderStatus: 'PENDING', orderType: 'RENT_VEHICLE' });
+
+        if (orders.length != 0) {
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Pending Vehicle Orders Fetched Successfully';
+            responseDTO.data = orders;
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'No pending vehicle orders found';
+            return res.status(404).json(responseDTO);
+        }
+
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while fetching pending vehicle orders';
+        return res.status(500).json(responseDTO);
+    }
+});
+
+//-------------------- Pending guide Orders Get ---------------------------------
+router.get('/api/v1/order/pending-guide-orders/:email', async (req, res) => {
+
+    const { email } = req.params;
+
+    try {
+        const orders = await OrderModel.find({ guide: email,orderStatus: 'PENDING', orderType: 'RENT_GUIDE' });
+
+        if (orders.length != 0) {
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = 'Pending GUIDe Orders Fetched Successfully';
+            responseDTO.data = orders;
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = 'No pending guide orders found';
+            return res.status(404).json(responseDTO);
+        }
+
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while fetching pending vehicle orders';
+        return res.status(500).json(responseDTO);
+    }
+});
 
 //-----------------------Pending vehicle order Accept
 router.put('/api/v1/order/accept-vehicle-order/:orderId/:vehicle_mail', async (req, res) => {
@@ -166,6 +222,7 @@ async function dailyTask() {
 schedule.scheduleJob("0 0 * * *", async () => {
     await dailyTask();
 });
+
 
 
 export default router

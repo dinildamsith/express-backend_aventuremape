@@ -12,6 +12,7 @@ const GuideSchema = new mongoose.Schema({
     guideAbout: { type: String },
     guideAge: { type: String },
     guidePrice: { type: String },
+    guideStatus: {type: String},
     languages: [{ type: String }],
 
     // Reviews array
