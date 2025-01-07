@@ -1,6 +1,7 @@
 import express from 'express';
 // @ts-ignore
-import { BuyerModel } from '../model/buyerModel.ts';  // Import the Mongoose model for Buyer
+import { BuyerModel } from '../model/buyerModel.ts';
+import OrderModel from "../model/orderModel";  // Import the Mongoose model for Buyer
 
 const router = express.Router();
 
@@ -113,6 +114,38 @@ router.get('/api/v1/buyer/selected/:accEmail', async (req, res) => {
         responseDTO.description = 'An error occurred while signing in the buyer';
         return res.status(500).json(responseDTO);
     }
+});
+
+
+// buyer have pending orders get
+router.get('/api/v1/buyer/pending-orders/:buyerEmail/:orderStatus', async (req, res) => {
+
+    const { buyerEmail }:any = req.params;
+    const { orderStatus }:any = req.params;
+
+    try {
+
+        const buyerPendingOrders = await OrderModel.find({buyerEmail: buyerEmail, orderStatus: orderStatus})
+        console.log(buyerPendingOrders)
+        if (buyerPendingOrders) {
+            responseDTO.status = 'SUCCESS';
+            responseDTO.description = "Buyer " + orderStatus + " Orders Have" ;
+            responseDTO.data = buyerPendingOrders;
+            return res.status(200).json(responseDTO);
+        } else {
+            responseDTO.status = 'FAILED';
+            responseDTO.description = "Buyer " + orderStatus + " Orders null";
+            responseDTO.data = buyerPendingOrders;
+            return res.status(200).json(responseDTO);
+        }
+
+    } catch (error) {
+        console.error(error);
+        responseDTO.status = 'FAILED';
+        responseDTO.description = 'An error occurred while signing in the buyer';
+        return res.status(500).json(responseDTO);
+    }
+
 });
 
 export default router;
