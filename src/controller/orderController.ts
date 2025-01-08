@@ -232,32 +232,74 @@ router.put('/api/v1/order/accept-guide-order/:orderId/:guide_mail', async (req, 
 // Define the method to run daily  ( this method process is accept order get and order start date come date auto set order status ONGOING)
 async function dailyTask() {
     try {
-        // Get orders with status ACCEPT
-        const orders = await OrderModel.find({ orderStatus: 'ACCEPT' });
+        // Get orders with status ACCEPT or ONGOING
+        const orders = await OrderModel.find({
+            orderStatus: { $in: ['ACCEPT', 'ONGOING'] },
+        });
 
-        // Get the current date to set for orderStart
-        const currentDate = new Date();
+        // Get the current date
+        const currentDate = new Date().toISOString().split('T')[0]; // Only the date part
 
-        // Update each order to set status to ONGOING and orderStart to the current date
         for (const order of orders) {
-            // Check if the current date matches the orderStartDuration
-            if (currentDate.toISOString().split('T')[0] === order.orderStartDuration) {
-                // Update order status to ONGOING and set orderStart
+            // Handle orders with status ACCEPT
+            if (order.orderStatus === 'ACCEPT' && currentDate === order.orderStartDuration) {
                 await OrderModel.updateOne(
                     { _id: order._id },
                     {
                         $set: {
-                            orderStatus: 'ONGOING',     // Update order status to ONGOING
-                        }
+                            orderStatus: 'ONGOING', // Update status to ONGOING
+                        },
                     }
                 );
                 console.log(`Order with ID ${order._id} updated to ONGOING`);
             }
+
+            // Handle orders with status ONGOING
+            if (order.orderStatus === 'ONGOING' && currentDate === order.orderEndDuration) {
+                await OrderModel.updateOne(
+                    { _id: order._id },
+                    {
+                        $set: {
+                            orderStatus: 'COMPLETED', // Update status to COMPLETED
+                        },
+                    }
+                );
+                console.log(`Order with ID ${order._id} updated to COMPLETED`);
+            }
         }
     } catch (error) {
-        console.error("Error running daily task:", error);
+        console.error('Error running daily task:', error);
     }
 }
+
+// async function dailyTask() {
+//     try {
+//         // Get orders with status ACCEPT
+//         const orders = await OrderModel.find({ orderStatus: 'ACCEPT' });
+//
+//         // Get the current date to set for orderStart
+//         const currentDate = new Date();
+//
+//         // Update each order to set status to ONGOING and orderStart to the current date
+//         for (const order of orders) {
+//             // Check if the current date matches the orderStartDuration
+//             if (currentDate.toISOString().split('T')[0] === order.orderStartDuration) {
+//                 // Update order status to ONGOING and set orderStart
+//                 await OrderModel.updateOne(
+//                     { _id: order._id },
+//                     {
+//                         $set: {
+//                             orderStatus: 'ONGOING',     // Update order status to ONGOING
+//                         }
+//                     }
+//                 );
+//                 console.log(`Order with ID ${order._id} updated to ONGOING`);
+//             }
+//         }
+//     } catch (error) {
+//         console.error("Error running daily task:", error);
+//     }
+// }
 
 // Schedule the task to run every day at midnight (00:00)
 schedule.scheduleJob("0 0 * * *", async () => {
