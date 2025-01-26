@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // DataBase Connectivity
-mongoose.connect("mongodb://localhost:27017/adventureMap");
+mongoose.connect("mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.mongodb.net/");
 
 const db = mongoose.connection;
 

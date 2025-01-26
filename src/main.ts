@@ -17,7 +17,7 @@ app.use(cors());
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/adventure-map')
+mongoose.connect('mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.mongodb.net/')
     .then(() => {
         console.log('Connected to MongoDB');
     })
