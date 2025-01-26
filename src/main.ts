@@ -17,7 +17,7 @@ app.use(cors());
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.mongodb.net/')
+mongoose.connect('mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.mongodb.net/?retryWrites=true&w=majority&appName=aventuremape')
     .then(() => {
         console.log('Connected to MongoDB');
     })
