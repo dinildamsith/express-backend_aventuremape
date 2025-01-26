@@ -6,6 +6,7 @@ const VehicleSchema = new mongoose.Schema({
     accUserName: { type: String, required: true },
     accPassword: { type: String, required: true },
     accType: { type: String, required: true },
+    accUserType: { type: String, default: "VEHICLE" }, // Default value as 'GUIDE'
     vehicleCode: { type: String, },
     vehicleImage: [{ type: String }],
     vehicleNumber: { type: String,},

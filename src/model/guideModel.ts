@@ -6,6 +6,7 @@ const GuideSchema = new mongoose.Schema({
     accUserName: { type: String, required: true },
     accPassword: { type: String, required: true },
     accType: { type: String, required: true },
+    accUserType: { type: String, default: "GUIDE" }, // Default value as 'GUIDE'
     guideCode: { type: String, required: false },
     guideImage: { type: String },
     guideName: { type: String },
