@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors({ origin: true })); // Allow all origins
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.mongodb.net/?retryWrites=true&w=majority&appName=aventuremape')
+mongoose.connect("<YOUR_URL_DB>")
     .then(() => {
         console.log('Connected to MongoDB');
     })
@@ -27,7 +27,7 @@ mongoose.connect('mongodb+srv://ddamsith17:9JnkaF5zwEAoMOmb@aventuremape.uetls.m
 app.use('/adventure-map', BuyerController, GuideController, vehicleController, imageUploadController, orderController);
 
 // Start the server
-const PORT = 5000;
+const PORT = 5200;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running and accessible on http://0.0.0.0:${PORT}`);
 });
